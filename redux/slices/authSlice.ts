@@ -20,6 +20,10 @@ interface SignupPayload{
     email:string
     password: string
 }
+interface LoginPayload{
+    email : string
+    password: string
+}
 interface ApiErrorResponse {
   message: string;
 }
@@ -44,6 +48,18 @@ export const signupUser = createAsyncThunk(
     }
 )
 
+export const loginUSer = createAsyncThunk(
+    'auth/login',
+    async({email, password}: LoginPayload, {rejectWithValue})=>{
+        try{
+            const response = await axiosInstance.post('/auth/login', {email, password})
+            return response.data
+        }catch(error){
+            const err = error as AxiosError<ApiErrorResponse>;
+            return rejectWithValue(err.response?.data?.message || 'Login Failed');
+        }
+    }
+)
 
 const authSlice = createSlice({
     name: 'auth',
@@ -68,6 +84,26 @@ const authSlice = createSlice({
         .addCase(signupUser.rejected, (state, action)=>{
             state.loading = false
             state.error = action.payload as string
+        })
+
+        .addCase(loginUSer.pending,(state)=>{
+            state.loading = true
+            state.error = null
+        } )
+        .addCase(loginUSer.fulfilled, (state, action)=>{
+            state.loading = false
+            state.isAuthenticated = true
+            state.user = {
+                _id: action.payload.id,
+                name: action.payload.name,
+                email: action.payload.email,
+                image: action.payload.image,
+                role: action.payload.role
+            }
+        })
+        .addCase(loginUSer.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload as string;
         })
     }
 
