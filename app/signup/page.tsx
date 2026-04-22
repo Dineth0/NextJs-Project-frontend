@@ -4,7 +4,7 @@ import SocailButtons from "@/components/SocialButtons";
 import { signupUser } from "@/redux/slices/authSlice";
 import { AppDisPatch, RootState } from "@/redux/store";
 import { showErrorAlert } from "@/util/SweetAlerts";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { HiOutlineEye, HiOutlineLockClosed, HiOutlineMail, HiOutlineUser } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
